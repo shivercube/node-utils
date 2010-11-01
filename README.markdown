@@ -14,6 +14,5 @@ The latest release of node-utils is compatible with node --version:
 
 ## License
 
-The BSD License
-
-Refer to LICENSE for more information.
+All code, unless otherwise specified, is licensed under the BSD License (refer
+to NOTICE).
