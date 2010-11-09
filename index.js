@@ -1,4 +1,5 @@
-var _ = exports._ = require('underscore')._;
+var crypto = require('crypto');
+require('underscore');
 
 /**
  * Merges the given objects together
@@ -77,4 +78,8 @@ exports.Sync = function() {
             _callback = callback;
         }
     };
+};
+
+exports.md5 = function(value) {
+    return crypto.createHash('md5').update(value).digest('hex');
 };
