@@ -78,7 +78,9 @@ describe('Sync', function() {
             obj = {a: 1, b: 2, c: 3};
 
         _.each(obj, function(value, key) {
-            utils.async(sync.result(), key, value);
+            utils.async(sync.run(function(key, value) {
+                return [key, value];
+            }), key, value);
         });
 
         sync.wait(function(result) {
@@ -92,6 +94,11 @@ describe('Sync', function() {
 describe('hasProperties', function() {
     it('returns true when all properties exist', function() {
         expect(utils.hasProperties({a: 1, b: 2, c: 3}, 'a', 'b', 'c'))
+            .toEqual(true);
+    });
+
+    it('accepts arrays', function() {
+        expect(utils.hasProperties({a: 1, b: 2, c: 3}, ['a', 'b', 'c']))
             .toEqual(true);
     });
 

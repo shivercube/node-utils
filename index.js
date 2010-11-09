@@ -67,10 +67,11 @@ exports.Sync = function() {
     }
 
     return {
-        result: function() {
+        run: function(callback) {
             total += 1;
-            return function(key, value) {
-                if (typeof key !== 'undefined') results[key] = value;
+            return function() {
+                var result = callback.apply(null, arguments);
+                if (result && result.length) results[result[0]] = result[1];
                 test();
             };
         },
@@ -86,6 +87,7 @@ exports.md5 = function(value) {
 
 exports.hasProperties = function(obj) {
     var args = shift(arguments);
+    if (typeof args[0] == 'object') args = args[0];
     for (var i = args.length - 1; i >= 0; --i) if (!obj[args[i]]) return false;
     return true;
 };
