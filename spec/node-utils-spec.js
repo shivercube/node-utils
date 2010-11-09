@@ -75,16 +75,31 @@ describe('utils.executeIf', function() {
 describe('Sync', function() {
     it('collects all results', function() {
         var sync = utils.Sync(),
-            nums = [1, 2, 3, 4, 5];
+            obj = {a: 1, b: 2, c: 3};
 
-        nums.forEach(function(n) {
-            utils.async(sync.result(), n);
+        _.each(obj, function(value, key) {
+            utils.async(sync.result(), key, value);
         });
 
         sync.wait(function(result) {
-            expect(result).toEqual(nums);
+            expect(result).toEqual(obj);
             asyncSpecDone();
         });
         asyncSpecWait();
+    });
+});
+
+describe('hasProperties', function() {
+    it('returns true when all properties exist', function() {
+        expect(utils.hasProperties({a: 1, b: 2, c: 3}, 'a', 'b', 'c'))
+            .toEqual(true);
+    });
+
+    it('returns false when no properties exist', function() {
+        expect(utils.hasProperties({}, 'a', 'b', 'c')).toEqual(false);
+    });
+
+    it('returns false when not all properties exist', function() {
+        expect(utils.hasProperties({a: 1, c: 3}, 'a', 'b', 'c')).toEqual(false);
     });
 });

@@ -57,7 +57,7 @@ exports.executeIf = function(context, logic) {
  * Object which coordinates a collection of asynchronous functions
  */
 exports.Sync = function() {
-    var results = [],
+    var results = {},
         total = 0,
         current = 0,
         _callback = null;
@@ -69,8 +69,8 @@ exports.Sync = function() {
     return {
         result: function() {
             total += 1;
-            return function(result) {
-                if (typeof result !== 'undefined') results.push(result);
+            return function(key, value) {
+                if (typeof key !== 'undefined') results[key] = value;
                 test();
             };
         },
@@ -82,4 +82,10 @@ exports.Sync = function() {
 
 exports.md5 = function(value) {
     return crypto.createHash('md5').update(value).digest('hex');
+};
+
+exports.hasProperties = function(obj) {
+    var args = shift(arguments);
+    for (var i = args.length - 1; i >= 0; --i) if (!obj[args[i]]) return false;
+    return true;
 };
