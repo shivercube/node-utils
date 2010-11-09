@@ -110,3 +110,47 @@ describe('hasProperties', function() {
         expect(utils.hasProperties({a: 1, c: 3}, 'a', 'b', 'c')).toEqual(false);
     });
 });
+
+describe('typeOf', function() {
+    it('returns correct types', function() {
+        expect(typeOf({})).toEqual('object');
+        expect(typeOf([])).toEqual('array');
+        expect(typeOf(function() {})).toEqual('function');
+        expect(typeOf('')).toEqual('string');
+        expect(typeOf(1)).toEqual('number');
+        expect(typeOf(true)).toEqual('boolean');
+        expect(typeOf(null)).toEqual('null');
+        expect(typeOf()).toEqual('undefined');
+    });
+});
+
+describe('isEmpty', function() {
+    it('returns true for empty objects', function() {
+        expect(isEmpty({})).toEqual(true);
+    });
+
+    it('ignores functions', function() {
+        expect(isEmpty({f: function() {}})).toEqual(true);
+    });
+
+    it('returns false for non-empty objects', function() {
+        expect(isEmpty({a: 1})).toEqual(false);
+    });
+
+    it('returns false for non-objects', function() {
+        expect(isEmpty([])).toEqual(false);
+    });
+});
+
+describe('supplant', function() {
+    it('substitutes strings', function() {
+        expect('My {key} is {value}'.supplant({key: 'name', value: 'bob'}))
+            .toEqual('My name is bob');
+    });
+});
+
+describe('trim', function() {
+    it('removes all whitespace', function() {
+        expect("  this is me\n  ".trim()).toEqual('this is me');
+    });
+});

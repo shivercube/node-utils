@@ -7,6 +7,10 @@ Collection of functional based helpers for working with Node.JS and JavaScript.
 * [underscore](http://github.com/documentcloud/underscore)
 * [jasmine-node](http://github.com/mhevery/jasmine-node)
 
+## Attributions
+
+* [JavaScript sprintf()](http://www.diveintojavascript.com/projects/javascript-sprintf)
+
 ## Node Compatibility
 
 The latest release of node-utils is compatible with node --version:
