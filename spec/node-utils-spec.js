@@ -159,4 +159,8 @@ describe('trim', function() {
     it('removes all whitespace', function() {
         expect("  this is me\n  ".trim()).toEqual('this is me');
     });
+
+    it('works on non strings', function() {
+        expect(utils.trim(123)).toEqual('123');
+    });
 });

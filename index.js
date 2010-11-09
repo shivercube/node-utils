@@ -93,3 +93,7 @@ exports.hasProperties = function(obj) {
     for (var i = args.length - 1; i >= 0; --i) if (!obj[args[i]]) return false;
     return true;
 };
+
+exports.trim = function(value) {
+    return ('' + value).trim();
+};
