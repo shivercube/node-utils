@@ -51,3 +51,30 @@ exports.executeIf = function(context, logic) {
 
     return logic[''] ? logic['']() : false;
 };
+
+/**
+ * Object which coordinates a collection of asynchronous functions
+ */
+exports.Sync = function() {
+    var results = [],
+        total = 0,
+        current = 0,
+        _callback = null;
+
+    function test() {
+        if (++current >= total && _callback) _callback.call(null, results);
+    }
+
+    return {
+        result: function() {
+            total += 1;
+            return function(result) {
+                if (typeof result !== 'undefined') results.push(result);
+                test();
+            };
+        },
+        wait: function(callback) {
+            _callback = callback;
+        }
+    };
+};

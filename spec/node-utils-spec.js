@@ -71,3 +71,20 @@ describe('utils.executeIf', function() {
         expect(utils.executeIf({}, logic)).toEqual('empty');
     });
 });
+
+describe('Sync', function() {
+    it('collects all results', function() {
+        var sync = utils.Sync(),
+            nums = [1, 2, 3, 4, 5];
+
+        nums.forEach(function(n) {
+            utils.async(sync.result(), n);
+        });
+
+        sync.wait(function(result) {
+            expect(result).toEqual(nums);
+            asyncSpecDone();
+        });
+        asyncSpecWait();
+    });
+});
