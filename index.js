@@ -1,7 +1,7 @@
 var crypto = require('crypto');
 require('underscore');
-require('remedial');
-require('printf');
+require('./remedial');
+require('./printf');
 
 /**
  * Merges the given objects together
