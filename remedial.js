@@ -30,9 +30,7 @@ global.isEmpty = function(obj) {
 
 String.prototype.supplant = function(attributes) {
     return this.replace(/{([^{}]*)}/g, function(key, value) {
-        var replace = attributes[value],
-            type = typeof replace;
-        return type === 'string' || type === 'number' ? replace : key;
+        return attributes[value];
     });
 };
 

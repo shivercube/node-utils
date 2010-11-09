@@ -147,6 +147,12 @@ describe('supplant', function() {
         expect('My {key} is {value}'.supplant({key: 'name', value: 'bob'}))
             .toEqual('My name is bob');
     });
+
+    it('automatically converts types', function() {
+        var now = new Date();
+        expect('Current time is: {date}'.supplant({date: now}))
+            .toEqual('Current time is: ' + now);
+    });
 });
 
 describe('trim', function() {
