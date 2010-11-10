@@ -164,3 +164,23 @@ describe('trim', function() {
         expect(utils.trim(123)).toEqual('123');
     });
 });
+
+describe('getAttribute', function() {
+    var obj = {id: 'abc', personal: {name: {first: 'Bob'}}};
+
+    it('retrieves an attribute when given a string', function() {
+        expect(utils.getAttribute(obj, 'id')).toEqual(obj.id);
+        expect(utils.getAttribute(obj, 'personal')).toEqual(obj.personal);
+    });
+
+    it('retrieves attribute when given an array', function() {
+        expect(utils.getAttribute(obj, ['id'])).toEqual(obj.id);
+        expect(utils.getAttribute(obj, ['personal', 'name', 'first']))
+            .toEqual(obj.personal.name.first);
+    });
+
+    it("returns undefined when string attribute doesn't exist", function() {
+        expect(utils.getAttribute(obj, 'name')).toBeUndefined();
+        expect(utils.getAttribute(obj, ['personal', 'age'])).toBeUndefined();
+    });
+});

@@ -97,3 +97,14 @@ exports.hasProperties = function(obj) {
 exports.trim = function(value) {
     return ('' + value).trim();
 };
+
+exports.getAttribute = function(obj, attribute) {
+    if (typeof attribute == 'string') return obj[attribute];
+
+    var value = obj[attribute[0]];
+    for (var i = 1, len = attribute.length; i < len; ++i) {
+        if (!value) break;
+        value = value[attribute[i]];
+    }
+    return value;
+};
