@@ -84,6 +84,10 @@ var Sync = exports.Sync = function() {
     };
 };
 
+/**
+ * Calls the given collection of functions asynchronously, collecting the
+ * results
+ */
 exports.run = function(functions, callback) {
     var args = getArgs(arguments);
     functions = args[0];
@@ -120,6 +124,9 @@ exports.getAttribute = function(obj, attribute) {
     return value;
 };
 
+/**
+ * Object which abstracts event handling
+ */
 exports.Observer = (function() {
     function callHandler(handler, callOnce) {
         var called = false;
@@ -185,6 +192,10 @@ exports.Observer = (function() {
     };
 }());
 
+/**
+ * Runs the given collection of functions sequentially, returning the final
+ * result when finished
+ */
 exports.chain = function() {
     var functions = arguments;
     return function() {
