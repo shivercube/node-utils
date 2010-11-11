@@ -110,9 +110,7 @@ exports.getAttribute = function(obj, attribute) {
     return value;
 };
 
-exports.Observer = function() {
-    var emitter = new events.EventEmitter();
-
+exports.Observer = (function() {
     function callHandler(handler, callOnce) {
         var called = false;
         return function() {
@@ -123,24 +121,26 @@ exports.Observer = function() {
         };
     }
 
-    function fire(event) {
-        emitter.emit.apply(emitter, arguments);
-    }
+    return function() {
+        var emitter = new events.EventEmitter();
 
-    return {
-        fire: fire,
-        on: function(event, handler) {
-            emitter.addListener(event, callHandler(handler, false));
-        },
-        once: function(event, handler) {
-            emitter.addListener(event, callHandler(handler, true));
-        },
-        relay: function(event, obj, fn) {
-            var original = obj['fn'];
-            obj['fn'] = function() {
-                original.apply(this, arguments);
-                fire.apply(null, _.flatten([event, _.values(arguments)]));
-            };
-        }
+        function fire(event) { emitter.emit.apply(emitter, arguments); }
+
+        return {
+            fire: fire,
+            on: function(event, handler) {
+                emitter.addListener(event, callHandler(handler, false));
+            },
+            once: function(event, handler) {
+                emitter.addListener(event, callHandler(handler, true));
+            },
+            relay: function(event, obj, fn) {
+                var original = obj['fn'];
+                obj['fn'] = function() {
+                    original.apply(this, arguments);
+                    fire.apply(null, _.flatten([event, _.values(arguments)]));
+                };
+            }
+        };
     };
-};
+}());
