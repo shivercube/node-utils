@@ -144,3 +144,16 @@ exports.Observer = (function() {
         };
     };
 }());
+
+exports.chain = function() {
+    var functions = arguments;
+    return function() {
+        var result = _.values(arguments);
+        _.each(functions, function(fn) {
+            result = fn.apply(null,
+                typeOf(result) == 'array' ? result : [result]);
+        });
+
+        return result;
+    };
+};

@@ -252,3 +252,25 @@ describe('observer', function() {
         expect(obj.called).toEqual(true);
     });
 });
+
+describe('chain', function() {
+    it('chains together multiple functions', function() {
+        function step1(i) {
+            expect(i).toEqual(1);
+            return i + 1;
+        }
+
+        function step2(i) {
+            expect(i).toEqual(2);
+            return [i * 2, i * 3];
+        }
+
+        function step3(a, b) {
+            expect(a).toEqual(4);
+            expect(b).toEqual(6);
+            return a + b;
+        }
+
+        expect(utils.chain(step1, step2, step3)(1)).toEqual(10);
+    });
+});
