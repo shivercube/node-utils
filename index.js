@@ -1,4 +1,5 @@
-var crypto = require('crypto');
+var crypto = require('crypto'),
+    events = require('events');
 require('underscore');
 require('./remedial');
 require('./printf');
@@ -25,7 +26,7 @@ var shift = exports.shift = function(args, n) {
 /**
  * Calls the given function with the given arguments asynchronously
  */
-exports.async = function(fn) {
+var async = exports.async = function(fn) {
     var args = shift(arguments);
     setTimeout(function() { fn.apply(null, args); }, 0);
 };
@@ -107,4 +108,22 @@ exports.getAttribute = function(obj, attribute) {
         value = value[attribute[i]];
     }
     return value;
+};
+
+exports.Observer = function() {
+    var emitter = new events.EventEmitter();
+
+    return {
+        on: function(event, handler) {
+            emitter.addListener(event, function() {
+                var args = _.values(arguments);
+                args.unshift(handler);
+                async.apply(null, args);
+            });
+        },
+
+        fire: function(event) {
+            emitter.emit.apply(emitter, arguments);
+        }
+    };
 };

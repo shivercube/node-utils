@@ -184,3 +184,38 @@ describe('getAttribute', function() {
         expect(utils.getAttribute(obj, ['personal', 'age'])).toBeUndefined();
     });
 });
+
+describe('observer', function() {
+    var observer;
+
+    beforeEach(function() {
+        observer = utils.Observer();
+    });
+
+    it('fires events', function() {
+        observer.on('ev1', function(arg1, arg2) {
+            expect(arg1).toEqual(1);
+            expect(arg2).toEqual('me');
+            asyncSpecDone();
+        });
+
+        observer.fire('ev1', 1, 'me');
+        asyncSpecWait();
+    });
+
+    it('fires events multiple times', function() {
+        var counter = 0;
+
+        function handler(arg1, arg2, arg3) {
+            expect(arg1).toEqual(1);
+            expect(arg2).toEqual(2);
+            expect(arg3).toEqual('3');
+            if (++counter == 2) asyncSpecDone();
+        }
+
+        observer.on('ev1', handler);
+        observer.on('ev1', handler);
+        observer.fire('ev1', 1, 2, '3');
+        asyncSpecWait();
+    });
+});
