@@ -193,13 +193,25 @@ describe('observer', function() {
     });
 
     it('fires events', function() {
-        observer.on('ev', function(arg1, arg2) {
-            expect(arg1).toEqual(1);
-            expect(arg2).toEqual('me');
+        var called = [];
+        observer.on('ev1', function(arg1, arg2) {
+            called.push('ev1');
+            expect(arguments).toEqual([1, 'me']);
+        });
+        observer.on('ev2', function() {
+            called.push('ev2');
+            expect(arguments).toEqual([]);
+        });
+        observer.on('ev3', function(arg1) {
+            called.push('ev3');
+            expect(arguments).toEqual(['name']);
+            expect(called).toEqual(['ev1', 'ev2', 'ev3']);
             asyncSpecDone();
         });
 
-        observer.fire('ev', 1, 'me');
+        observer.fire('ev1', 1, 'me');
+        observer.fire('ev2');
+        observer.fire('ev3', 'name');
         asyncSpecWait();
     });
 
@@ -250,6 +262,37 @@ describe('observer', function() {
         observer.relay('ev', obj, 'fn');
         obj.fn('hello');
         expect(obj.called).toEqual(true);
+    });
+
+    describe('group scheduling', function() {
+        function multipleHandler(args) {
+            expect(args).toEqual({ev1: 'result from ev1', ev2: [1, 2]});
+            asyncSpecDone();
+        }
+
+        it('allows group scheduling', function() {
+            observer.when('ev1', 'ev2', multipleHandler);
+            observer.fire('ev2', 1, 2);
+            observer.fire('ev1', 'result from ev1');
+            asyncSpecWait();
+        });
+
+        it('allows an array as first argument', function() {
+            observer.when(['ev1', 'ev2'], multipleHandler);
+            observer.fire('ev2', 1, 2);
+            observer.fire('ev1', 'result from ev1');
+            asyncSpecWait();
+        });
+
+        it('supports single events', function() {
+            observer.when('ev1', function(args) {
+                expect(args).toEqual({ev1: 'result from ev1'});
+                asyncSpecDone();
+            });
+
+            observer.fire('ev1', 'result from ev1');
+            asyncSpecWait();
+        });
     });
 });
 

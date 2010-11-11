@@ -121,6 +121,8 @@ exports.Observer = (function() {
         };
     }
 
+    function notUndefined(arg) { return typeof arg !== 'undefined'; }
+
     return function() {
         var emitter = new events.EventEmitter();
 
@@ -140,6 +142,37 @@ exports.Observer = (function() {
                     original.apply(this, arguments);
                     fire.apply(null, _.flatten([event, _.values(arguments)]));
                 };
+            },
+            /**
+             * Calls the given handler when all of the given events are fired
+             */
+            when: function(events, handler) {
+                // Fix argument values to support overloading syntax
+                if (arguments.length > 2) {
+                    events = _.first(arguments, arguments.length - 1);
+                    handler = _.last(arguments);
+                }
+                if (typeOf(events) != 'array') events = [events];
+
+                var self = this,
+                    totalEvents = events.length,
+                    calledEvents = 0,
+                    eventArgs = {};
+
+                function eventHandler(event) {
+                    return function() {
+                        var args = _(arguments).chain().values()
+                            .select(notUndefined).value();
+
+                        eventArgs[event] = args.length == 1 ? args[0] : args;
+
+                        if (++calledEvents == totalEvents) handler(eventArgs);
+                    };
+                }
+
+                _.each(events, function(event) {
+                    self.once(event, eventHandler(event));
+                });
             }
         };
     };
