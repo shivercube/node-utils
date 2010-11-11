@@ -229,4 +229,26 @@ describe('observer', function() {
         observer.fire('ev', 'not twice');
         asyncSpecWait();
     });
+
+    it('relays events', function() {
+        function Obj() {
+            return {
+                called: false,
+                fn: function(data) {
+                    expect(data).toEqual('hello');
+                    this.called = true;
+                    asyncSpecWait();
+                }
+            };
+        }
+
+        var obj = Obj();
+        observer.on('ev', function(data) {
+            expect(data).toEqual('hello');
+            asyncSpecDone();
+        });
+        observer.relay('ev', obj, 'fn');
+        obj.fn('hello');
+        expect(obj.called).toEqual(true);
+    });
 });

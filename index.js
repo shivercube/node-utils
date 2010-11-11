@@ -123,15 +123,24 @@ exports.Observer = function() {
         };
     }
 
+    function fire(event) {
+        emitter.emit.apply(emitter, arguments);
+    }
+
     return {
+        fire: fire,
         on: function(event, handler) {
             emitter.addListener(event, callHandler(handler, false));
         },
         once: function(event, handler) {
             emitter.addListener(event, callHandler(handler, true));
         },
-        fire: function(event) {
-            emitter.emit.apply(emitter, arguments);
+        relay: function(event, obj, fn) {
+            var original = obj['fn'];
+            obj['fn'] = function() {
+                original.apply(this, arguments);
+                fire.apply(null, _.flatten([event, _.values(arguments)]));
+            };
         }
     };
 };
