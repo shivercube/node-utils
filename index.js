@@ -59,7 +59,7 @@ exports.executeIf = function(context, logic) {
 /**
  * Object which coordinates a collection of asynchronous functions
  */
-exports.Sync = function() {
+var Sync = exports.Sync = function() {
     var results = {},
         total = 0,
         current = 0,
@@ -70,10 +70,10 @@ exports.Sync = function() {
     }
 
     return {
-        run: function(callback) {
+        run: function(fn) {
             total += 1;
             return function() {
-                var result = callback.apply(null, arguments);
+                var result = fn.apply(null, arguments);
                 if (result && result.length) results[result[0]] = result[1];
                 test();
             };
@@ -82,6 +82,16 @@ exports.Sync = function() {
             _callback = callback;
         }
     };
+};
+
+exports.run = function(functions, callback) {
+    var args = getArgs(arguments);
+    functions = args[0];
+    callback = args[1];
+
+    var sync = Sync();
+    _.each(functions, function(fn) { async(sync.run(fn)); });
+    sync.wait(callback);
 };
 
 exports.md5 = function(value) {
@@ -147,12 +157,9 @@ exports.Observer = (function() {
              * Calls the given handler when all of the given events are fired
              */
             when: function(events, handler) {
-                // Fix argument values to support overloading syntax
-                if (arguments.length > 2) {
-                    events = _.first(arguments, arguments.length - 1);
-                    handler = _.last(arguments);
-                }
-                if (typeOf(events) != 'array') events = [events];
+                var args = getArgs(arguments);
+                events = args[0];
+                handler = args[1];
 
                 var self = this,
                     totalEvents = events.length,
@@ -190,3 +197,20 @@ exports.chain = function() {
         return result;
     };
 };
+
+/**
+ * Corrects the given array of arguments: [[1…n], last]
+ */
+function getArgs(args) {
+    var first = args[0],
+        last = args[1];
+
+    if (args.length > 2) {
+        first = _.first(args, args.length - 1);
+        last = _.last(args);
+    }
+
+    if (typeOf(first) != 'array') first = [first];
+
+    return [first, last];
+}

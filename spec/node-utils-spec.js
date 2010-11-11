@@ -91,6 +91,35 @@ describe('Sync', function() {
     });
 });
 
+describe('run', function() {
+    function a() { return ['a', 1]; }
+    function b() { return ['b', 2]; }
+    function c() { return ['c', 3]; }
+
+    function multipleCallback(result) {
+        expect(result).toEqual({a: 1, b: 2, c: 3});
+        asyncSpecDone();
+    }
+
+    it('collects all results', function() {
+        utils.run(a, b, c, multipleCallback);
+        asyncSpecWait();
+    });
+
+    it('accepts array as first argument', function() {
+        utils.run([a, b, c], multipleCallback);
+        asyncSpecWait();
+    });
+
+    it('accepts one function', function() {
+        utils.run(a, function(result) {
+            expect(result).toEqual({a: 1});
+            asyncSpecDone();
+        });
+        asyncSpecWait();
+    })
+});
+
 describe('hasProperties', function() {
     it('returns true when all properties exist', function() {
         expect(utils.hasProperties({a: 1, b: 2, c: 3}, 'a', 'b', 'c'))
