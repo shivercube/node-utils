@@ -113,15 +113,23 @@ exports.getAttribute = function(obj, attribute) {
 exports.Observer = function() {
     var emitter = new events.EventEmitter();
 
+    function callHandler(handler, callOnce) {
+        var called = false;
+        return function() {
+            if (!callOnce || !called) {
+                called = true;
+                async.apply(null, _.flatten([handler, _.values(arguments)]));
+            }
+        };
+    }
+
     return {
         on: function(event, handler) {
-            emitter.addListener(event, function() {
-                var args = _.values(arguments);
-                args.unshift(handler);
-                async.apply(null, args);
-            });
+            emitter.addListener(event, callHandler(handler, false));
         },
-
+        once: function(event, handler) {
+            emitter.addListener(event, callHandler(handler, true));
+        },
         fire: function(event) {
             emitter.emit.apply(emitter, arguments);
         }

@@ -193,13 +193,13 @@ describe('observer', function() {
     });
 
     it('fires events', function() {
-        observer.on('ev1', function(arg1, arg2) {
+        observer.on('ev', function(arg1, arg2) {
             expect(arg1).toEqual(1);
             expect(arg2).toEqual('me');
             asyncSpecDone();
         });
 
-        observer.fire('ev1', 1, 'me');
+        observer.fire('ev', 1, 'me');
         asyncSpecWait();
     });
 
@@ -213,9 +213,20 @@ describe('observer', function() {
             if (++counter == 2) asyncSpecDone();
         }
 
-        observer.on('ev1', handler);
-        observer.on('ev1', handler);
-        observer.fire('ev1', 1, 2, '3');
+        observer.on('ev', handler);
+        observer.on('ev', handler);
+        observer.fire('ev', 1, 2, '3');
+        asyncSpecWait();
+    });
+
+    it('can fire an event only once', function() {
+        observer.once('ev', function(data) {
+            expect(data).toEqual('only once');
+            asyncSpecDone();
+        });
+
+        observer.fire('ev', 'only once');
+        observer.fire('ev', 'not twice');
         asyncSpecWait();
     });
 });
