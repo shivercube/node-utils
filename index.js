@@ -210,6 +210,16 @@ exports.chain = function() {
 };
 
 /**
+ * Encapsulates parsing of a JSON string
+ * @param data
+ * @return false|object
+ */
+exports.parseJSON = function(data) {
+    try { return JSON.parse(data);}
+    catch (err) { return false; }
+};
+
+/**
  * Corrects the given array of arguments: [[1…n], last]
  */
 function getArgs(args) {
