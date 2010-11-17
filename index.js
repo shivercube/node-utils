@@ -256,3 +256,7 @@ utils.singular = function(value) {
     else if (word.substr(len - 1) == 's') return word.substr(0, len - 1);
     else return word;
 };
+
+utils.isNumber = function(value) {
+    return '' + parseInt(value, 10) == value;
+};

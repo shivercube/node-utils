@@ -389,3 +389,17 @@ describe('singular', function() {
         expect(utils.singular('FLOWERS')).toEqual('flower');
     });
 });
+
+describe('isNumber', function() {
+    it('returns true for numbers', function() {
+        expect(utils.isNumber(15)).toEqual(true);
+        expect(utils.isNumber('105')).toEqual(true);
+        expect(utils.isNumber('5468')).toEqual(true);
+    });
+
+    it('returns false for non-numbers', function() {
+        expect(utils.isNumber('a')).toEqual(false);
+        expect(utils.isNumber('a10')).toEqual(false);
+        expect(utils.isNumber('43g')).toEqual(false);
+    });
+});
