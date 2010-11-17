@@ -245,3 +245,14 @@ utils.Exception = function(name, defaultMsg) {
         Error.captureStackTrace(this, arguments.callee);
     };
 };
+
+utils.singular = function(value) {
+    var word = utils.trim(value).toLocaleLowerCase(),
+        len = word.length,
+        last3 = word.substring(len - 3);
+
+    if (last3 == 'ies') return word.substr(0, len -3) + 'y';
+    else if (last3 == 'ses') return word.substr(0, len -2);
+    else if (word.substr(len - 1) == 's') return word.substr(0, len - 1);
+    else return word;
+};

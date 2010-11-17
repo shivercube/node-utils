@@ -363,3 +363,29 @@ describe('parseJSON', function() {
         expect(utils.parseJSON('123abc')).toEqual(false);
     });
 });
+
+describe('singular', function() {
+    it('adds "y" to the end of words ending with "ies"', function() {
+        expect(utils.singular('armies')).toEqual('army');
+    });
+
+    it('removes "ses" from the end of words', function() {
+        expect(utils.singular('mattresses')).toEqual('mattress');
+    });
+
+    it('removes "s" from the end of words', function() {
+        expect(utils.singular('peanuts')).toEqual('peanut');
+    });
+
+    it('returns the original word when no rules are matched', function() {
+        expect(utils.singular('original')).toEqual('original');
+    });
+
+    it('trims words', function() {
+        expect(utils.singular('  flies ')).toEqual('fly');
+    });
+
+    it('it is case insensitive', function() {
+        expect(utils.singular('FLOWERS')).toEqual('flower');
+    });
+});
