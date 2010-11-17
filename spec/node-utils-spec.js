@@ -352,3 +352,14 @@ describe('chain', function() {
         expect(utils.chain(step1, step2, step3)(1)).toEqual(10);
     });
 });
+
+describe('parseJSON', function() {
+    it('converts JSON string to object', function() {
+        var data = {name: 'bob', method: 'you'};
+        expect(utils.parseJSON(JSON.stringify(data))).toEqual(data);
+    });
+
+    it('returns false for invalid strings', function() {
+        expect(utils.parseJSON('123abc')).toEqual(false);
+    });
+});
