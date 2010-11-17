@@ -99,8 +99,20 @@ utils.run = function(functions, callback) {
     sync.wait(callback);
 };
 
+utils.hash = function(algorithm, value) {
+    return crypto.createHash(algorithm).update(value).digest('hex');
+};
+
 utils.md5 = function(value) {
-    return crypto.createHash('md5').update(value).digest('hex');
+    return utils.hash('md5', value);
+};
+
+utils.sha1 = function(value) {
+    return utils.hash('sha1', value);
+};
+
+utils.sha2 = function(value) {
+    return utils.hash('sha256', value);
 };
 
 utils.hasProperties = function(obj) {
