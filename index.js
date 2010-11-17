@@ -1,4 +1,5 @@
-var crypto = require('crypto'),
+var utils = exports,
+    crypto = require('crypto'),
     events = require('events');
 require('underscore');
 require('./remedial');
@@ -7,7 +8,7 @@ require('./printf');
 /**
  * Merges the given objects together
  */
-exports.merge = function() {
+utils.merge = function() {
     var obj = {};
     _.each(arguments, function(arg) {
         for (var item in arg) obj[item] = arg[item];
@@ -19,15 +20,15 @@ exports.merge = function() {
 /**
  * Removes the first n items from the given property list
  */
-var shift = exports.shift = function(args, n) {
+utils.shift = function(args, n) {
     return _.values(args).slice(n ? n : 1);
 };
 
 /**
  * Calls the given function with the given arguments asynchronously
  */
-var async = exports.async = function(fn) {
-    var args = shift(arguments);
+utils.async = function(fn) {
+    var args = utils.shift(arguments);
     setTimeout(function() { fn.apply(null, args); }, 0);
 };
 
@@ -46,7 +47,7 @@ var async = exports.async = function(fn) {
  * @param context The object which defines the properties to test
  * @param logic The property list containing the possible functions to execute
  */
-exports.executeIf = function(context, logic) {
+utils.executeIf = function(context, logic) {
     for (var i in logic) {
         if (i && context[i]) {
             return logic[i]();
@@ -59,7 +60,7 @@ exports.executeIf = function(context, logic) {
 /**
  * Object which coordinates a collection of asynchronous functions
  */
-var Sync = exports.Sync = function() {
+utils.Sync = function() {
     var results = {},
         total = 0,
         current = 0,
@@ -88,32 +89,32 @@ var Sync = exports.Sync = function() {
  * Calls the given collection of functions asynchronously, collecting the
  * results
  */
-exports.run = function(functions, callback) {
+utils.run = function(functions, callback) {
     var args = getArgs(arguments);
     functions = args[0];
     callback = args[1];
 
-    var sync = Sync();
-    _.each(functions, function(fn) { async(sync.run(fn)); });
+    var sync = utils.Sync();
+    _.each(functions, function(fn) { utils.async(sync.run(fn)); });
     sync.wait(callback);
 };
 
-exports.md5 = function(value) {
+utils.md5 = function(value) {
     return crypto.createHash('md5').update(value).digest('hex');
 };
 
-exports.hasProperties = function(obj) {
-    var args = shift(arguments);
+utils.hasProperties = function(obj) {
+    var args = utils.shift(arguments);
     if (typeof args[0] == 'object') args = args[0];
     for (var i = args.length - 1; i >= 0; --i) if (!obj[args[i]]) return false;
     return true;
 };
 
-exports.trim = function(value) {
+utils.trim = function(value) {
     return ('' + value).trim();
 };
 
-exports.getAttribute = function(obj, attribute) {
+utils.getAttribute = function(obj, attribute) {
     if (typeof attribute == 'string') return obj[attribute];
 
     var value = obj[attribute[0]];
@@ -127,13 +128,14 @@ exports.getAttribute = function(obj, attribute) {
 /**
  * Object which abstracts event handling
  */
-exports.Observer = (function() {
+utils.Observer = (function() {
     function callHandler(handler, callOnce) {
         var called = false;
         return function() {
             if (!callOnce || !called) {
                 called = true;
-                async.apply(null, _.flatten([handler, _.values(arguments)]));
+                utils.async.apply(
+                    null, _.flatten([handler, _.values(arguments)]));
             }
         };
     }
@@ -196,7 +198,7 @@ exports.Observer = (function() {
  * Runs the given collection of functions sequentially, returning the final
  * result when finished
  */
-exports.chain = function() {
+utils.chain = function() {
     var functions = arguments;
     return function() {
         var result = _.values(arguments);
@@ -214,7 +216,7 @@ exports.chain = function() {
  * @param data
  * @return false|object
  */
-exports.parseJSON = function(data) {
+utils.parseJSON = function(data) {
     try { return JSON.parse(data);}
     catch (err) { return false; }
 };
@@ -236,7 +238,7 @@ function getArgs(args) {
     return [first, last];
 }
 
-exports.Exception = function(name, defaultMsg) {
+utils.Exception = function(name, defaultMsg) {
     return function(msg) {
         this.name = name;
         Error.call(this, msg ? msg : defaultMsg);
