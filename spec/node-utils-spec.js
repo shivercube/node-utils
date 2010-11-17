@@ -409,3 +409,19 @@ describe('encode', function() {
         expect(utils.encode('My&name<is>')).toEqual('My&amp;name&lt;is&gt;');
     });
 });
+
+describe('toXML', function() {
+    it('converts objects to XML strings', function() {
+        var data = {world: true, method: 'hello', names: ['bob', 'harry']};
+        expect(utils.toXML(data, 'response')).toEqual(
+            '<?xml version="1.0" encoding="UTF-8">\n' +
+            '<response>\n' +
+            '  <world>true</world>\n' +
+            '  <method>hello</method>\n' +
+            '  <names>\n' +
+            '    <name>bob</name>\n' +
+            '    <name>harry</name>\n' +
+            '  </names>\n' +
+            '</response>');
+    });
+});

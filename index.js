@@ -277,3 +277,34 @@ utils.encode = (function() {
         return value;
     };
 }());
+
+utils.toXML = (function() {
+    function toXML(data, root, indent, level, lastKey) {
+        var xml = level == 1 ?
+            sprintf('<?xml version="1.0" encoding="UTF-8">\n<%s>\n', root) : '';
+
+        _.each(data, function(value, key) {
+            if (utils.isNumber(key)) {
+                var singular = utils.singular(lastKey);
+                key = singular != key ? singular : 'data';
+            }
+
+            var isIterative = typeof value == 'object';
+            xml += sprintf(isIterative ?
+                '%(indent)s<%(key)s>\n%(content)s%(indent)s</%(key)s>\n' :
+                '%(indent)s<%(key)s>%(content)s</%(key)s>\n', {
+                indent: indent.repeat(level),
+                key: key,
+                content: isIterative ?
+                    toXML(value, root, indent, level + 1, key) :
+                    utils.encode(value)
+            });
+        });
+
+        return level == 1 ? xml + '</' + root + '>' : xml;
+    }
+
+    return function(data, root, indent) {
+        return toXML(data, root, indent ? indent : '  ', 1, 'data');
+    };
+}());
