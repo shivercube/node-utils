@@ -403,3 +403,9 @@ describe('isNumber', function() {
         expect(utils.isNumber('43g')).toEqual(false);
     });
 });
+
+describe('encode', function() {
+    it('converts entities', function() {
+        expect(utils.encode('My&name<is>')).toEqual('My&amp;name&lt;is&gt;');
+    });
+});

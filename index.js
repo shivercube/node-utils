@@ -260,3 +260,20 @@ utils.singular = function(value) {
 utils.isNumber = function(value) {
     return '' + parseInt(value, 10) == value;
 };
+
+utils.encode = (function() {
+    var searchAndReplace = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;'
+    };
+
+    return function(value) {
+        value = '' + value;
+        _.each(searchAndReplace, function(replace, search) {
+            value = value.replace(search, replace);
+        });
+
+        return value;
+    };
+}());
