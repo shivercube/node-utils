@@ -236,10 +236,10 @@ function getArgs(args) {
     return [first, last];
 }
 
-exports.Exception = function(name) {
+exports.Exception = function(name, defaultMsg) {
     return function(msg) {
         this.name = name;
-        Error.call(this, msg);
+        Error.call(this, msg ? msg : defaultMsg);
         Error.captureStackTrace(this, arguments.callee);
     };
 };
