@@ -194,6 +194,12 @@ describe('trim', function() {
     });
 });
 
+describe('repeat', function() {
+    it('repeats a character n times', function() {
+        expect(' '.repeat(5)).toEqual('     ');
+    });
+});
+
 describe('getAttribute', function() {
     var obj = {id: 'abc', personal: {name: {first: 'Bob'}}};
 

@@ -37,3 +37,9 @@ String.prototype.supplant = function(attributes) {
 String.prototype.trim = function() {
     return this.replace(/^\s*(\S*(?:\s+\S+)*)\s*$/, '$1');
 };
+
+String.prototype.repeat = function(n) {
+    var buffer = '';
+    for (var i = 0; i < n; ++i) buffer += this;
+    return buffer;
+};
