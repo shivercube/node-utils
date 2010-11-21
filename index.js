@@ -358,3 +358,5 @@ utils.uuid = (function() {
         return uuid.join('');
     };
 }());
+
+utils.nothing = function() {};
