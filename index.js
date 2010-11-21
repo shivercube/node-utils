@@ -85,6 +85,29 @@ utils.Sync = function() {
     };
 };
 
+utils.Sync2 = function(callback) {
+    var errs = [],
+        results = {},
+        total = 0,
+        current = 0;
+
+    function done(name) {
+        return function(err, result) {
+            err ? errs.push(err) : results[name] = result;
+            if (++current == total) {
+                callback(errs.length ? errs : null, results);
+            }
+        };
+    }
+
+    return {
+        add: function(fn) {
+            ++total;
+            fn.apply(done);
+        }
+    };
+};
+
 /**
  * Calls the given collection of functions asynchronously, collecting the
  * results
