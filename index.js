@@ -320,3 +320,18 @@ utils.toXML = (function() {
         return toXML(data, root, indent ? indent : '  ', 1, 'data');
     };
 }());
+
+utils.uuid = (function() {
+    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+        .split('');
+
+    return function(len, radix) {
+        if (!len || len < 0) len = 32;
+        if (!radix || radix < 0 || radix > 62) radix = 62;
+
+        var uuid = [];
+        for (var i = 0; i < len;
+            uuid[i++] = chars[0 | Math.random() * radix]) {}
+        return uuid.join('');
+    };
+}());

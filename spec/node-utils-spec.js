@@ -425,3 +425,13 @@ describe('toXML', function() {
             '</response>');
     });
 });
+
+describe('uuid', function() {
+    it('produces random 32 character string', function() {
+        expect(utils.uuid().length).toEqual(32);
+    });
+
+    it('produces random 16 character string', function() {
+        expect(utils.uuid(16, 16).length).toEqual(16);
+    });
+});
