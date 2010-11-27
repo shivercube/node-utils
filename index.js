@@ -1,4 +1,5 @@
 var utils = exports,
+    util = require('util'),
     crypto = require('crypto'),
     events = require('events');
 require('underscore');
@@ -360,3 +361,13 @@ utils.uuid = (function() {
 }());
 
 utils.nothing = function() {};
+
+utils.ErrorHandler = function(callback, errorCallback) {
+    if (!errorCallback) errorCallback = function(err) {
+        util.log('Error: ' + util.inspect(err));
+    };
+    
+    return function(err, result) {
+        err ? errorCallback(err) : callback(result);
+    };
+};
