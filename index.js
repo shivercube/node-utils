@@ -1,7 +1,8 @@
 var utils = exports,
     util = require('util'),
     crypto = require('crypto'),
-    events = require('events');
+    events = require('events'),
+    __slice = Array.prototype.slice;
 require('underscore');
 require('./remedial');
 require('./printf');
@@ -107,6 +108,29 @@ utils.Sync2 = function(callback) {
             fn.apply(done);
         }
     };
+};
+
+utils.asyncRun = function(functions, callback) {
+    var _i,
+        errs = {},
+        results = {},
+        total = 0,
+        current = 0;
+    
+    // Extract the correct arguments
+    functions = 2 <= arguments.length ?
+        __slice.call(arguments, 0, _i = arguments.length - 1) :
+        (_i = 0, []), callback = arguments[_i++];
+    
+    function done(err, name, result) {
+        err ? errs[name] = err : results[name] = result;
+        if (++current == total) callback(isEmpty(errs) ? null : errs, results);
+    }
+    
+    _.each(functions, function(fn) {
+        ++total;
+        setTimeout(function() { fn.apply(done); }, 0);
+    });
 };
 
 /**
